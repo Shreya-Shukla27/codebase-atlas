@@ -90,6 +90,12 @@ Open http://localhost:3000
 
 ![App Architecture](assets/diagrams/app-architecture.svg)
 
+### Recruiter-Friendly Architecture
+
+This simplified diagram highlights components and responsibilities — useful for resumes and technical screens.
+
+![Recruiter Architecture](assets/diagrams/recruiter-architecture.svg)
+
 ### Backend Data Flow
 
 ![Backend Data Flow](assets/diagrams/backend-data-flow.svg)
