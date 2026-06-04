@@ -86,7 +86,17 @@ Open http://localhost:3000
 
 ## Architecture
 
-```
+### App Architecture
+
+![App Architecture](assets/diagrams/app-architecture.svg)
+
+### Backend Data Flow
+
+![Backend Data Flow](assets/diagrams/backend-data-flow.svg)
+
+Legend: blue = frontend, green = backend, amber = external API, purple = AI/chat.
+
+```text
 codebase-atlas/
 ├── backend/
 │   └── app/
