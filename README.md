@@ -94,7 +94,18 @@ Open http://localhost:3000
 
 This simplified diagram highlights components and responsibilities — useful for resumes and technical screens.
 
-![Recruiter Architecture](assets/diagrams/recruiter-architecture.svg)
+<picture>
+    <source srcset="assets/diagrams/recruiter-architecture.png" type="image/png">
+    <img src="assets/diagrams/recruiter-architecture.svg" alt="Recruiter Architecture" style="max-width:100%;height:auto;" />
+</picture>
+
+If the PNG fallback is missing, generate it locally with:
+
+```powershell
+.\scripts\convert-diagrams.ps1
+# or (WSL / macOS / Linux)
+./scripts/convert-diagrams.sh
+```
 
 ### Backend Data Flow
 
