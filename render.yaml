@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: codebase-atlas-api
+    env: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GITHUB_TOKEN
+        sync: false           # Set this in the Render dashboard
+      - key: ANTHROPIC_API_KEY
+        sync: false           # Set this in the Render dashboard
+      - key: ALLOWED_ORIGINS
+        sync: false           # e.g. https://codebase-atlas.vercel.app (your Vercel URL, no trailing slash)

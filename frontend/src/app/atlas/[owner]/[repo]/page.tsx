@@ -46,7 +46,7 @@ export default function AtlasPage() {
       .join("\n");
     return `Repo: ${graph.repo}
 Total files: ${graph.stats.total_files}
-Languages: ${Object.entries(graph.stats.languages).map(([k,v]) => `${k}(${v})`).join(", ")}
+Languages: ${Object.entries(graph.stats.languages).map(([k, v]) => `${k}(${v})`).join(", ")}
 Total import edges: ${graph.stats.total_edges}
 
 Top files by commits:
@@ -106,7 +106,8 @@ ${edgeSample}`;
 
       <div className="flex flex-1 overflow-hidden relative">
         {/* Graph canvas */}
-        <div className="flex-1 relative">
+        <div className="flex-1 relative" style={{ minHeight: 0, height: "100%" }}>
+
           <GalaxyGraph
             graph={graph}
             viewMode={viewMode}

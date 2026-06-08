@@ -1,9 +1,11 @@
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from app.models.graph import ChatRequest
-from app.core.config import settings
 import httpx
 import json
+import ssl
+import certifi
+import os
 
 router = APIRouter()
 
@@ -15,28 +17,33 @@ Format responses with markdown. Use code blocks when referencing files or code."
 
 @router.post("/stream")
 async def chat_stream(req: ChatRequest):
+    from app.core.config import settings
+    groq_key = getattr(settings, "GROQ_API_KEY", "") or os.environ.get("GROQ_API_KEY", "")
+
     messages = [{"role": m.role, "content": m.content} for m in req.messages]
-    
+
     if req.repo_context:
-        messages = [{"role": "user", "content": f"Repo context:\n{req.repo_context}"},
-                    {"role": "assistant", "content": "Got it. I've analyzed the repo structure. Ask me anything about this codebase."},
-                    *messages]
+        messages = [
+            {"role": "user", "content": f"Repo context:\n{req.repo_context}"},
+            {"role": "assistant", "content": "Got it. I've analyzed the repo structure. Ask me anything about this codebase."},
+            *messages
+        ]
 
     async def generate():
-        async with httpx.AsyncClient(timeout=60) as client:
+        ssl_context = ssl.create_default_context(cafile=certifi.where())
+        transport = httpx.AsyncHTTPTransport(verify=ssl_context)
+        async with httpx.AsyncClient(transport=transport, timeout=60) as client:
             async with client.stream(
                 "POST",
-                "https://api.anthropic.com/v1/messages",
+                "https://api.groq.com/openai/v1/chat/completions",
                 headers={
-                    "x-api-key": settings.ANTHROPIC_API_KEY,
-                    "anthropic-version": "2023-06-01",
-                    "content-type": "application/json",
+                    "Authorization": f"Bearer {groq_key}",
+                    "Content-Type": "application/json",
                 },
                 json={
-                    "model": "claude-3-5-haiku-20241022",
+                    "model": "llama-3.1-8b-instant",
                     "max_tokens": 1024,
-                    "system": SYSTEM_PROMPT,
-                    "messages": messages,
+                    "messages": [{"role": "system", "content": SYSTEM_PROMPT}] + messages,
                     "stream": True,
                 }
             ) as resp:
@@ -47,10 +54,9 @@ async def chat_stream(req: ChatRequest):
                             break
                         try:
                             event = json.loads(data)
-                            if event.get("type") == "content_block_delta":
-                                text = event["delta"].get("text", "")
-                                if text:
-                                    yield f"data: {json.dumps({'text': text})}\n\n"
+                            text = event["choices"][0]["delta"].get("content", "")
+                            if text:
+                                yield f"data: {json.dumps({'text': text})}\n\n"
                         except Exception:
                             pass
         yield "data: [DONE]\n\n"
