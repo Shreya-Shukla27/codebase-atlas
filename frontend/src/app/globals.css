@@ -111,3 +111,123 @@ body {
   border: 2px solid currentColor;
   animation: pulse-ring 2s ease-out infinite;
 }
+
+/* ─── Landing Page Animations ─── */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(79, 142, 247, 0.3), 0 0 40px rgba(99, 102, 241, 0.15); }
+  50% { box-shadow: 0 0 30px rgba(79, 142, 247, 0.5), 0 0 60px rgba(99, 102, 241, 0.25); }
+}
+
+@keyframes border-glow {
+  0%, 100% { border-color: rgba(79, 142, 247, 0.2); }
+  50% { border-color: rgba(79, 142, 247, 0.5); }
+}
+
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(6px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(6px) rotate(-360deg); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-fade-in-scale {
+  animation: fadeInScale 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-600 { animation-delay: 0.6s; }
+.delay-700 { animation-delay: 0.7s; }
+.delay-800 { animation-delay: 0.8s; }
+
+/* Glassmorphism */
+.glass {
+  background: rgba(10, 15, 30, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(79, 142, 247, 0.15);
+}
+
+.glass-hover:hover {
+  background: rgba(10, 15, 30, 0.75);
+  border-color: rgba(79, 142, 247, 0.35);
+  box-shadow: 0 8px 32px rgba(79, 142, 247, 0.1);
+}
+
+/* Shimmer text */
+.text-shimmer {
+  background: linear-gradient(
+    90deg,
+    #e2e8f0 0%,
+    #4f8ef7 25%,
+    #a78bfa 50%,
+    #4f8ef7 75%,
+    #e2e8f0 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
+/* Glow button */
+.btn-glow {
+  animation: glow-pulse 2.5s ease-in-out infinite;
+  transition: all 0.3s ease;
+}
+
+.btn-glow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 40px rgba(79, 142, 247, 0.6), 0 0 80px rgba(99, 102, 241, 0.3);
+}
+
+/* Orbiting dot */
+.orbit-dot::before {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+  animation: orbit 4s linear infinite;
+  top: 50%;
+  left: 50%;
+}
+
