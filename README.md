@@ -4,6 +4,15 @@
 
 ![Stack](https://img.shields.io/badge/Next.js_14-black?style=flat&logo=next.js) ![Stack](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white) ![Stack](https://img.shields.io/badge/React_Flow-FF0072?style=flat&logo=react&logoColor=white)
 
+## 🚀 Live Demo
+
+| | Link |
+|---|---|
+| **Frontend (Vercel)** | [https://atlas-ai-shreya27.vercel.app](https://atlas-ai-shreya27.vercel.app) |
+| **Backend API (Render)** | [https://codebase-atlas.onrender.com](https://codebase-atlas.onrender.com) |
+
+> **Note:** The backend is hosted on Render's free tier and may take ~30-60 seconds to wake up on first request after inactivity.
+
 ---
 
 ## Features
