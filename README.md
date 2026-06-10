@@ -95,33 +95,6 @@ Open http://localhost:3000
 
 ## Architecture
 
-### App Architecture
-
-![App Architecture](assets/diagrams/app-architecture.svg)
-
-### Recruiter-Friendly Architecture
-
-This simplified diagram highlights components and responsibilities — useful for resumes and technical screens.
-
-<picture>
-    <source srcset="assets/diagrams/recruiter-architecture.png" type="image/png">
-    <img src="assets/diagrams/recruiter-architecture.svg" alt="Recruiter Architecture" style="max-width:100%;height:auto;" />
-</picture>
-
-If the PNG fallback is missing, generate it locally with:
-
-```powershell
-.\scripts\convert-diagrams.ps1
-# or (WSL / macOS / Linux)
-./scripts/convert-diagrams.sh
-```
-
-### Backend Data Flow
-
-![Backend Data Flow](assets/diagrams/backend-data-flow.svg)
-
-Legend: blue = frontend, green = backend, amber = external API, purple = AI/chat.
-
 ```text
 codebase-atlas/
 ├── backend/
