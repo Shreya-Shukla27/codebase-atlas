@@ -1,160 +1,279 @@
 "use client";
-import { useRef, useMemo, useEffect, useState } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Stars, Float } from "@react-three/drei";
-import * as THREE from "three";
+import { useRef, useEffect, useCallback } from "react";
 
-/* ─── Floating Orb (glowing planet-like sphere) ─── */
-function GlowOrb({
-  position,
-  color,
-  size = 0.15,
-  speed = 0.3,
-}: {
-  position: [number, number, number];
+/* ─── Types ─── */
+interface Star {
+  x: number;
+  y: number;
+  z: number;
+  size: number;
+  brightness: number;
   color: string;
-  size?: number;
-  speed?: number;
-}) {
-  const meshRef = useRef<THREE.Mesh>(null!);
-  const initialPos = useMemo(() => new THREE.Vector3(...position), [position]);
-
-  useFrame(({ clock }) => {
-    const t = clock.getElapsedTime() * speed;
-    meshRef.current.position.x = initialPos.x + Math.sin(t) * 0.5;
-    meshRef.current.position.y = initialPos.y + Math.cos(t * 1.3) * 0.3;
-    meshRef.current.position.z = initialPos.z + Math.sin(t * 0.7) * 0.4;
-  });
-
-  return (
-    <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5}>
-      <mesh ref={meshRef} position={position}>
-        <sphereGeometry args={[size, 16, 16]} />
-        <meshStandardMaterial
-          color={color}
-          emissive={color}
-          emissiveIntensity={2}
-          toneMapped={false}
-        />
-      </mesh>
-    </Float>
-  );
 }
 
-/* ─── Orbital Ring ─── */
-function OrbitalRing({
-  radius,
-  speed = 0.1,
-  color = "#4f8ef7",
-}: {
+interface Orb {
+  angle: number;
   radius: number;
-  speed?: number;
-  color?: string;
-}) {
-  const ringRef = useRef<THREE.Mesh>(null!);
-
-  useFrame(({ clock }) => {
-    ringRef.current.rotation.z = clock.getElapsedTime() * speed;
-  });
-
-  return (
-    <mesh ref={ringRef} rotation={[Math.PI / 2.5, 0, 0]}>
-      <torusGeometry args={[radius, 0.005, 16, 100]} />
-      <meshStandardMaterial
-        color={color}
-        emissive={color}
-        emissiveIntensity={1}
-        transparent
-        opacity={0.3}
-        toneMapped={false}
-      />
-    </mesh>
-  );
+  speed: number;
+  size: number;
+  color: string;
+  glowColor: string;
+  yOffset: number;
+  ySpeed: number;
 }
 
-/* ─── Mouse Parallax Camera ─── */
-function MouseParallax() {
-  const { camera } = useThree();
-  const mouse = useRef({ x: 0, y: 0 });
+interface Ring {
+  radius: number;
+  speed: number;
+  color: string;
+  opacity: number;
+  tilt: number;
+}
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const handler = (e: MouseEvent) => {
-        mouse.current.x = (e.clientX / window.innerWidth - 0.5) * 2;
-        mouse.current.y = (e.clientY / window.innerHeight - 0.5) * 2;
-      };
-      window.addEventListener("mousemove", handler);
-      return () => window.removeEventListener("mousemove", handler);
+/* ─── Constants ─── */
+const STAR_COUNT = 800;
+const ORB_COUNT = 8;
+const RING_COUNT = 3;
+
+const COLORS = [
+  "#4f8ef7", "#6366f1", "#22d3ee", "#a78bfa",
+  "#f97316", "#eab308", "#818cf8", "#38bdf8",
+];
+
+/* ─── Helpers ─── */
+function randomBetween(min: number, max: number) {
+  return Math.random() * (max - min) + min;
+}
+
+function createStars(count: number): Star[] {
+  const stars: Star[] = [];
+  for (let i = 0; i < count; i++) {
+    stars.push({
+      x: Math.random() * 2 - 1,
+      y: Math.random() * 2 - 1,
+      z: Math.random(),
+      size: randomBetween(0.3, 1.8),
+      brightness: randomBetween(0.3, 1),
+      color: Math.random() > 0.85
+        ? COLORS[Math.floor(Math.random() * COLORS.length)]
+        : "#ffffff",
+    });
+  }
+  return stars;
+}
+
+function createOrbs(count: number): Orb[] {
+  const orbs: Orb[] = [];
+  for (let i = 0; i < count; i++) {
+    const color = COLORS[i % COLORS.length];
+    orbs.push({
+      angle: randomBetween(0, Math.PI * 2),
+      radius: randomBetween(80, 300),
+      speed: randomBetween(0.0003, 0.0012) * (Math.random() > 0.5 ? 1 : -1),
+      size: randomBetween(3, 12),
+      color,
+      glowColor: color,
+      yOffset: 0,
+      ySpeed: randomBetween(0.0005, 0.002),
+    });
+  }
+  return orbs;
+}
+
+function createRings(count: number): Ring[] {
+  return [
+    { radius: 120, speed: 0.0002, color: "#4f8ef7", opacity: 0.12, tilt: 0.3 },
+    { radius: 200, speed: -0.00015, color: "#6366f1", opacity: 0.08, tilt: 0.5 },
+    { radius: 300, speed: 0.0001, color: "#22d3ee", opacity: 0.06, tilt: 0.2 },
+  ].slice(0, count);
+}
+
+/* ─── Main Component ─── */
+export default function StarField3D() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mouseRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 });
+  const starsRef = useRef<Star[]>([]);
+  const orbsRef = useRef<Orb[]>([]);
+  const ringsRef = useRef<Ring[]>([]);
+  const frameRef = useRef<number>(0);
+
+  const draw = useCallback((ctx: CanvasRenderingContext2D, width: number, height: number, time: number) => {
+    const cx = width / 2;
+    const cy = height / 2;
+    const mouse = mouseRef.current;
+
+    // Smooth mouse follow
+    mouse.x += (mouse.targetX - mouse.x) * 0.03;
+    mouse.y += (mouse.targetY - mouse.y) * 0.03;
+
+    // Clear
+    ctx.clearRect(0, 0, width, height);
+
+    // Central nebula glow
+    const nebulaGrad = ctx.createRadialGradient(
+      cx + mouse.x * 10, cy + mouse.y * 10, 0,
+      cx + mouse.x * 10, cy + mouse.y * 10, 350
+    );
+    nebulaGrad.addColorStop(0, "rgba(99, 102, 241, 0.06)");
+    nebulaGrad.addColorStop(0.4, "rgba(79, 142, 247, 0.03)");
+    nebulaGrad.addColorStop(1, "transparent");
+    ctx.fillStyle = nebulaGrad;
+    ctx.fillRect(0, 0, width, height);
+
+    // Secondary nebula
+    const nebula2 = ctx.createRadialGradient(
+      cx + 200 + mouse.x * 5, cy - 150 + mouse.y * 5, 0,
+      cx + 200 + mouse.x * 5, cy - 150 + mouse.y * 5, 250
+    );
+    nebula2.addColorStop(0, "rgba(34, 211, 238, 0.04)");
+    nebula2.addColorStop(1, "transparent");
+    ctx.fillStyle = nebula2;
+    ctx.fillRect(0, 0, width, height);
+
+    // ─── Orbital Rings ───
+    const rings = ringsRef.current;
+    for (const ring of rings) {
+      const angle = time * ring.speed;
+      ctx.save();
+      ctx.translate(cx + mouse.x * 15, cy + mouse.y * 15);
+      ctx.rotate(angle);
+      ctx.scale(1, ring.tilt);
+      ctx.beginPath();
+      ctx.arc(0, 0, ring.radius, 0, Math.PI * 2);
+      ctx.strokeStyle = ring.color;
+      ctx.globalAlpha = ring.opacity;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      ctx.restore();
     }
+
+    // ─── Stars ───
+    const stars = starsRef.current;
+    for (const star of stars) {
+      const parallax = star.z * 0.5 + 0.5;
+      const sx = cx + star.x * cx * 1.2 + mouse.x * 20 * parallax;
+      const sy = cy + star.y * cy * 1.2 + mouse.y * 20 * parallax;
+
+      // Twinkle
+      const twinkle = 0.5 + 0.5 * Math.sin(time * 0.001 * (star.brightness * 3) + star.x * 100);
+      const alpha = star.brightness * twinkle;
+
+      if (star.color !== "#ffffff") {
+        // Colored stars get a glow
+        ctx.beginPath();
+        ctx.arc(sx, sy, star.size * 3, 0, Math.PI * 2);
+        ctx.fillStyle = star.color;
+        ctx.globalAlpha = alpha * 0.15;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+
+      ctx.beginPath();
+      ctx.arc(sx, sy, star.size * parallax, 0, Math.PI * 2);
+      ctx.fillStyle = star.color;
+      ctx.globalAlpha = alpha;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    // ─── Floating Orbs ───
+    const orbs = orbsRef.current;
+    for (const orb of orbs) {
+      orb.angle += orb.speed;
+      orb.yOffset = Math.sin(time * orb.ySpeed) * 30;
+
+      const ox = cx + Math.cos(orb.angle) * orb.radius + mouse.x * 25;
+      const oy = cy + Math.sin(orb.angle) * orb.radius * 0.4 + orb.yOffset + mouse.y * 25;
+
+      // Outer glow
+      const glowGrad = ctx.createRadialGradient(ox, oy, 0, ox, oy, orb.size * 6);
+      glowGrad.addColorStop(0, orb.glowColor + "40");
+      glowGrad.addColorStop(0.5, orb.glowColor + "10");
+      glowGrad.addColorStop(1, "transparent");
+      ctx.fillStyle = glowGrad;
+      ctx.fillRect(ox - orb.size * 6, oy - orb.size * 6, orb.size * 12, orb.size * 12);
+
+      // Core
+      const coreGrad = ctx.createRadialGradient(ox, oy, 0, ox, oy, orb.size);
+      coreGrad.addColorStop(0, "#ffffff");
+      coreGrad.addColorStop(0.3, orb.color);
+      coreGrad.addColorStop(1, orb.color + "00");
+      ctx.beginPath();
+      ctx.arc(ox, oy, orb.size, 0, Math.PI * 2);
+      ctx.fillStyle = coreGrad;
+      ctx.fill();
+    }
+
+    // ─── Central star ───
+    const centralPulse = 0.8 + 0.2 * Math.sin(time * 0.0008);
+    const centralGrad = ctx.createRadialGradient(
+      cx + mouse.x * 10, cy + mouse.y * 10, 0,
+      cx + mouse.x * 10, cy + mouse.y * 10, 60 * centralPulse
+    );
+    centralGrad.addColorStop(0, "rgba(79, 142, 247, 0.15)");
+    centralGrad.addColorStop(0.5, "rgba(99, 102, 241, 0.05)");
+    centralGrad.addColorStop(1, "transparent");
+    ctx.fillStyle = centralGrad;
+    ctx.beginPath();
+    ctx.arc(cx + mouse.x * 10, cy + mouse.y * 10, 60 * centralPulse, 0, Math.PI * 2);
+    ctx.fill();
+
   }, []);
 
-  useFrame(() => {
-    camera.position.x += (mouse.current.x * 0.3 - camera.position.x) * 0.02;
-    camera.position.y += (-mouse.current.y * 0.3 - camera.position.y) * 0.02;
-    camera.lookAt(0, 0, 0);
-  });
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-  return null;
-}
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-/* ─── Scene Content ─── */
-function Scene() {
-  return (
-    <>
-      <ambientLight intensity={0.1} />
-      <pointLight position={[0, 0, 0]} intensity={1} color="#6366f1" />
+    // Init
+    starsRef.current = createStars(STAR_COUNT);
+    orbsRef.current = createOrbs(ORB_COUNT);
+    ringsRef.current = createRings(RING_COUNT);
 
-      {/* Star field */}
-      <Stars
-        radius={50}
-        depth={80}
-        count={6000}
-        factor={4}
-        saturation={0.2}
-        fade
-        speed={0.5}
-      />
+    // Resize handler
+    function resize() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas!.width = window.innerWidth * dpr;
+      canvas!.height = window.innerHeight * dpr;
+      canvas!.style.width = window.innerWidth + "px";
+      canvas!.style.height = window.innerHeight + "px";
+      ctx!.scale(dpr, dpr);
+    }
+    resize();
+    window.addEventListener("resize", resize);
 
-      {/* Orbital rings */}
-      <OrbitalRing radius={3} speed={0.08} color="#4f8ef7" />
-      <OrbitalRing radius={5} speed={-0.05} color="#6366f1" />
-      <OrbitalRing radius={7} speed={0.03} color="#22d3ee" />
+    // Mouse handler
+    function handleMouse(e: MouseEvent) {
+      mouseRef.current.targetX = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouseRef.current.targetY = (e.clientY / window.innerHeight - 0.5) * 2;
+    }
+    window.addEventListener("mousemove", handleMouse);
 
-      {/* Floating orbs */}
-      <GlowOrb position={[2, 1, -3]} color="#f97316" size={0.12} speed={0.4} />
-      <GlowOrb position={[-3, -1, -2]} color="#4f8ef7" size={0.18} speed={0.25} />
-      <GlowOrb position={[4, -2, -5]} color="#6366f1" size={0.1} speed={0.35} />
-      <GlowOrb position={[-2, 2, -4]} color="#22d3ee" size={0.14} speed={0.3} />
-      <GlowOrb position={[1, -3, -6]} color="#eab308" size={0.08} speed={0.5} />
-      <GlowOrb position={[-4, 0, -3]} color="#f97316" size={0.1} speed={0.2} />
-      <GlowOrb position={[3, 3, -7]} color="#a78bfa" size={0.16} speed={0.15} />
+    // Animation loop
+    let running = true;
+    function animate(time: number) {
+      if (!running) return;
+      const dpr = window.devicePixelRatio || 1;
+      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+      draw(ctx!, window.innerWidth, window.innerHeight, time);
+      frameRef.current = requestAnimationFrame(animate);
+    }
+    frameRef.current = requestAnimationFrame(animate);
 
-      {/* Central glow sphere */}
-      <mesh position={[0, 0, -8]}>
-        <sphereGeometry args={[1.5, 32, 32]} />
-        <meshStandardMaterial
-          color="#4f8ef7"
-          emissive="#4f8ef7"
-          emissiveIntensity={0.8}
-          transparent
-          opacity={0.15}
-          toneMapped={false}
-        />
-      </mesh>
-
-      <MouseParallax />
-    </>
-  );
-}
-
-/* ─── Main Exported Component ─── */
-export default function StarField3D() {
-  const [hasError, setHasError] = useState(false);
-
-  if (hasError) return null;
+    return () => {
+      running = false;
+      cancelAnimationFrame(frameRef.current);
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("mousemove", handleMouse);
+    };
+  }, [draw]);
 
   return (
-    <div
+    <canvas
+      ref={canvasRef}
       style={{
         position: "fixed",
         top: 0,
@@ -164,20 +283,6 @@ export default function StarField3D() {
         zIndex: 0,
         pointerEvents: "none",
       }}
-    >
-      <Canvas
-        camera={{ position: [0, 0, 5], fov: 60 }}
-        dpr={[1, 1.5]}
-        style={{ pointerEvents: "auto" }}
-        gl={{ antialias: true, alpha: true }}
-        onCreated={({ gl }) => {
-          gl.setClearColor(0x000000, 0);
-        }}
-        fallback={null}
-      >
-        <Scene />
-      </Canvas>
-    </div>
+    />
   );
 }
-

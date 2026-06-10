@@ -1,13 +1,7 @@
 "use client";
-import { useState, Suspense } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
-
-/* Lazy-load the 3D background so it doesn't block initial paint */
-const StarField3D = dynamic(() => import("@/components/StarField3D"), {
-  ssr: false,
-  loading: () => null,
-});
+import StarField3D from "@/components/StarField3D";
 
 const EXAMPLES = [
   { owner: "facebook", repo: "react", desc: "UI library", icon: "⚛️" },
@@ -48,10 +42,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
-      {/* 3D Animated Background */}
-      <Suspense fallback={null}>
-        <StarField3D />
-      </Suspense>
+      {/* Animated Background */}
+      <StarField3D />
 
       {/* Gradient overlays for depth */}
       <div className="fixed inset-0 pointer-events-none z-[1]"
