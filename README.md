@@ -1,6 +1,6 @@
 # ✦ Codebase Atlas
 
-> Visualize any GitHub repo as an interactive galaxy. Files are planets — the more commits, the brighter they glow.
+> Visualize any GitHub repo as an interactive galaxy. Files are planets- the more commits, the brighter they glow.
 
 ![Stack](https://img.shields.io/badge/Next.js_14-black?style=flat&logo=next.js) ![Stack](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white) ![Stack](https://img.shields.io/badge/React_Flow-FF0072?style=flat&logo=react&logoColor=white)
 
@@ -17,11 +17,11 @@
 
 ## Features
 
-- **Galaxy Visualization** — React Flow graph with circular orbital layout. File size = planet size, commit frequency = glow intensity
-- **3 View Modes** — Commit Heatmap, Import Graph (dependency edges), Language Colors
-- **Click to Inspect** — Select any planet to see file stats, imports, and dependents
-- **AI Chat** — Ask Claude anything about the repo architecture (requires Anthropic API key)
-- **Live Stats Panel** — Language breakdown, hottest files, total edges
+- **Galaxy Visualization**- React Flow graph with circular orbital layout. File size = planet size, commit frequency = glow intensity
+- **3 View Modes**- Commit Heatmap, Import Graph (dependency edges), Language Colors
+- **Click to Inspect**- Select any planet to see file stats, imports, and dependents
+- **AI Chat**- Ask Claude anything about the repo architecture (requires Anthropic API key)
+- **Live Stats Panel**- Language breakdown, hottest files, total edges
 
 ---
 
@@ -89,7 +89,7 @@ Open http://localhost:3000
    - Drag to pan, scroll to zoom
    - Click any planet to inspect that file
    - Switch modes in the top bar (Commit Heat / Imports / Language)
-4. **Chat with AI** — click "AI Chat" in the top bar to ask questions about the architecture
+4. **Chat with AI**- click "AI Chat" in the top bar to ask questions about the architecture
 
 ---
 
@@ -115,7 +115,7 @@ codebase-atlas/
         │   └── atlas/[owner]/[repo]/page.tsx # Main visualization
         ├── components/
         │   ├── GalaxyGraph.tsx   # React Flow graph with planet nodes
-        │   ├── StatsPanel.tsx    # Right sidebar — stats, hot files, node detail
+        │   ├── StatsPanel.tsx    # Right sidebar- stats, hot files, node detail
         │   ├── ChatPanel.tsx     # AI chat sidebar with streaming
         │   └── TopBar.tsx        # Repo name, view mode switcher
         └── lib/
@@ -127,13 +127,13 @@ codebase-atlas/
 
 ## How the Graph is Built
 
-1. **Fetch GitHub tree** — recursive tree API call gets all file paths
-2. **Filter** — skip `node_modules`, `dist`, `build`, etc. Keep source files only (max 80)
-3. **Commit counts** — fetch last 30 commits, count touches per file (= glow intensity)
-4. **Content fetch** — download small files (<50KB) to extract imports
-5. **Import extraction** — regex patterns per language (Python, JS/TS, Go, Rust)
-6. **Edge resolution** — resolve relative imports to actual file paths → edges
-7. **Layout** — concentric rings, hottest files placed nearest center
+1. **Fetch GitHub tree**- recursive tree API call gets all file paths
+2. **Filter**- skip `node_modules`, `dist`, `build`, etc. Keep source files only (max 80)
+3. **Commit counts**- fetch last 30 commits, count touches per file (= glow intensity)
+4. **Content fetch**- download small files (<50KB) to extract imports
+5. **Import extraction**- regex patterns per language (Python, JS/TS, Go, Rust)
+6. **Edge resolution**- resolve relative imports to actual file paths → edges
+7. **Layout**- concentric rings, hottest files placed nearest center
 
 ---
 
