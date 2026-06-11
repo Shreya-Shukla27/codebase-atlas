@@ -108,7 +108,7 @@ function MessageBubble({ msg }: { msg: ChatMessage }) {
       if (line.startsWith("```")) {
         if (inCode) {
           elements.push(
-            <pre key={key++} style={{ background: "#050810", border: "1px solid #1a2040", borderRadius: 6, padding: "8px 10px", fontSize: 11, overflowX: "auto", fontFamily: "'JetBrains Mono', monospace", margin: "6px 0" }}>
+            <pre key={key++} style={{ background: "#050810", border: "1px solid #1a2040", borderRadius: 6, padding: "8px 10px", fontSize: 11, overflowX: "auto", fontFamily: "'Fira Code', monospace", margin: "6px 0" }}>
               {codeLines.join("\n")}
             </pre>
           );
@@ -122,7 +122,7 @@ function MessageBubble({ msg }: { msg: ChatMessage }) {
       } else {
         const formatted = line
           .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-          .replace(/`(.*?)`/g, `<code style="background:#1a2040;padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#4f8ef7">$1</code>`);
+          .replace(/`(.*?)`/g, `<code style="background:#1a2040;padding:1px 5px;border-radius:3px;font-family:'Fira Code',monospace;font-size:11px;color:#4f8ef7">$1</code>`);
         elements.push(
           <p key={key++} style={{ margin: "2px 0", lineHeight: 1.6, fontSize: 12 }}
             dangerouslySetInnerHTML={{ __html: formatted || "&nbsp;" }} />

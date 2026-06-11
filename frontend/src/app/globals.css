@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -20,9 +20,11 @@
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   margin: 0;
   overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Scrollbar */
@@ -69,7 +71,7 @@ body {
   border-radius: 8px;
   padding: 10px 14px;
   font-size: 12px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Fira Code', monospace;
   pointer-events: none;
   z-index: 1000;
   max-width: 280px;
@@ -82,14 +84,14 @@ body {
   border-radius: 6px;
   padding: 12px;
   overflow-x: auto;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Fira Code', monospace;
   font-size: 12px;
 }
 .chat-content code:not(pre code) {
   background: var(--border);
   padding: 1px 5px;
   border-radius: 3px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Fira Code', monospace;
   font-size: 12px;
   color: var(--accent);
 }

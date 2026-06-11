@@ -8,8 +8,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        mono: ["'JetBrains Mono'", "monospace"],
-        sans: ["'Geist'", "system-ui", "sans-serif"],
+        mono: ["'Fira Code'", "monospace"],
+        sans: ["'Plus Jakarta Sans'", "system-ui", "sans-serif"],
       },
       colors: {
         atlas: {

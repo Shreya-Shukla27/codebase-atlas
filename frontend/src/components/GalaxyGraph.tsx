@@ -67,7 +67,7 @@ function PlanetNode({ data }: NodeProps) {
       {isHot && <div style={{ position: "absolute", width: size + 16, height: size + 16, borderRadius: "50%", background: `radial-gradient(circle, ${glow}22, transparent 70%)`, pointerEvents: "none" }} />}
       {selected && <div style={{ position: "absolute", width: size + 8, height: size + 8, borderRadius: "50%", border: "2px solid #fff", opacity: 0.6, pointerEvents: "none" }} />}
       <div style={{ width: size, height: size, borderRadius: "50%", background: `radial-gradient(circle at 35% 35%, ${color}dd, ${color}88)`, boxShadow: isHot ? `0 0 ${size / 2}px ${glow}66` : `0 0 8px ${color}33`, cursor: "pointer", transition: "transform 0.25s ease", transform: selected ? "scale(1.08)" : "scale(1)", border: selected ? `1px solid ${color}` : "none" }} />
-      {size > 22 && <div style={{ position: "absolute", top: size + 4, left: "50%", transform: "translateX(-50%)", whiteSpace: "nowrap", fontSize: 10, color: selected ? "#fff" : "#64748b", fontFamily: "'JetBrains Mono', monospace", pointerEvents: "none", maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis" }}>{node.label}</div>}
+      {size > 22 && <div style={{ position: "absolute", top: size + 4, left: "50%", transform: "translateX(-50%)", whiteSpace: "nowrap", fontSize: 10, color: selected ? "#fff" : "#64748b", fontFamily: "'Fira Code', monospace", pointerEvents: "none", maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis" }}>{node.label}</div>}
     </div>
   );
 }
@@ -150,7 +150,7 @@ export default function GalaxyGraph({ graph, viewMode, selectedNode, onSelectNod
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
       {layouting && (
-        <div style={{ position: "absolute", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(5,8,16,0.8)", color: "#cfe9ff", fontFamily: "'JetBrains Mono', monospace" }}>
+        <div style={{ position: "absolute", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(5,8,16,0.8)", color: "#cfe9ff", fontFamily: "'Fira Code', monospace" }}>
           <div style={{ textAlign: "center" }}>
             <div style={{ fontSize: 14, marginBottom: 6 }}>Arranging galaxy...</div>
             <div style={{ fontSize: 12, opacity: 0.7 }}>This may take a moment for large repos</div>

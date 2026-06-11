@@ -41,7 +41,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-y-auto overflow-x-hidden">
       {/* Animated Background */}
       <StarField3D />
 
@@ -52,7 +52,7 @@ export default function Home() {
         }}
       />
 
-      <div className="relative z-10 flex flex-col items-center gap-10 w-full max-w-2xl px-6">
+      <div className="relative z-10 flex flex-col items-center gap-6 w-full max-w-2xl px-6 py-8">
 
         {/* ─── Open Source Badge ─── */}
         <div className="animate-fade-in-up">
@@ -60,7 +60,7 @@ export default function Home() {
             href="https://github.com/Shreya-Shukla27/codebase-atlas"
             target="_blank"
             rel="noopener noreferrer"
-            className="glass rounded-full px-4 py-1.5 text-xs font-mono text-atlas-dim hover:text-atlas-accent transition-colors flex items-center gap-2 group"
+            className="glass rounded-full px-4 py-1.5 text-xs text-atlas-dim hover:text-atlas-accent transition-colors flex items-center gap-2 group"
           >
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             Open Source on GitHub
@@ -78,8 +78,8 @@ export default function Home() {
             <div className="absolute inset-[14px] rounded-full bg-white/90" />
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-shimmer"
-            style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif" }}>
+          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-shimmer"
+            style={{ fontFamily: "'Sora', system-ui, sans-serif", letterSpacing: "-0.03em" }}>
             Codebase Atlas
           </h1>
           <p className="text-atlas-dim text-center text-base leading-relaxed max-w-lg">
@@ -102,24 +102,24 @@ export default function Home() {
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
                 placeholder="github.com/owner/repo or owner/repo"
-                className="flex-1 bg-transparent py-3 text-sm text-atlas-text placeholder-atlas-dim/60 focus:outline-none font-mono"
+                className="flex-1 bg-transparent py-3 text-sm text-atlas-text placeholder-atlas-dim/60 focus:outline-none font-mono tracking-tight"
                 id="repo-input"
               />
             </div>
             <button
               type="submit"
               id="explore-button"
-              className="px-8 py-3 bg-gradient-to-r from-atlas-accent to-atlas-glow text-white rounded-lg text-sm font-semibold btn-glow active:scale-95 transition-transform"
+              className="px-8 py-3 bg-gradient-to-r from-atlas-accent to-atlas-glow text-white rounded-lg text-sm font-semibold btn-glow active:scale-95 transition-transform tracking-wide"
             >
               Explore
             </button>
           </div>
-          {error && <p className="text-red-400 text-xs font-mono mt-2 ml-2">{error}</p>}
+          {error && <p className="text-red-400 text-xs mt-2 ml-2">{error}</p>}
         </form>
 
         {/* ─── Example Repos ─── */}
         <div className="w-full animate-fade-in-up delay-400">
-          <p className="text-atlas-dim text-xs mb-3 font-mono uppercase tracking-wider flex items-center gap-2">
+          <p className="text-atlas-dim text-xs mb-3 uppercase tracking-widest flex items-center gap-2 font-medium">
             <span className="w-8 h-px bg-atlas-border" />
             Try these
             <span className="w-8 h-px bg-atlas-border" />
@@ -156,7 +156,7 @@ export default function Home() {
           {FEATURES.map(f => (
             <span
               key={f.label}
-              className="glass rounded-full px-4 py-2 text-xs text-atlas-dim font-mono flex items-center gap-2 hover:text-atlas-text hover:border-atlas-accent/30 transition-all cursor-default"
+              className="glass rounded-full px-4 py-2 text-xs text-atlas-dim flex items-center gap-2 hover:text-atlas-text hover:border-atlas-accent/30 transition-all cursor-default"
             >
               <span>{f.icon}</span>
               {f.label}
@@ -164,10 +164,13 @@ export default function Home() {
           ))}
         </div>
 
-        {/* ─── Stats line ─── */}
-        <div className="animate-fade-in-up delay-800">
-          <p className="text-atlas-dim/50 text-xs font-mono text-center">
-            Powered by React Flow · D3 · FastAPI · Claude AI
+        {/* ─── Attribution ─── */}
+        <div className="animate-fade-in-up delay-800 flex flex-col items-center gap-1.5 pb-4">
+          <p className="text-atlas-dim/40 text-[11px] text-center tracking-wide">
+            React Flow · D3 · FastAPI · Claude AI
+          </p>
+          <p className="text-atlas-dim/70 text-sm text-center font-medium tracking-wider">
+            Made by <span className="text-atlas-accent font-semibold">Shreya</span>
           </p>
         </div>
       </div>
