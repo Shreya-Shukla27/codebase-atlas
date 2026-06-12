@@ -114,6 +114,40 @@ body {
   animation: pulse-ring 2s ease-out infinite;
 }
 
+/* ─── Galaxy Planet Animations ─── */
+
+@keyframes planet-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.25); opacity: 1; }
+}
+
+@keyframes planet-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes planet-shimmer {
+  0%, 100% { box-shadow: 0 0 8px var(--planet-color, #4f8ef7); }
+  50% { box-shadow: 0 0 18px var(--planet-color, #4f8ef7), 0 0 36px var(--planet-color, #4f8ef7); }
+}
+
+@keyframes selection-ping {
+  0% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.15); opacity: 0.3; }
+  100% { transform: scale(1); opacity: 0.6; }
+}
+
+@keyframes edge-flow {
+  from { stroke-dashoffset: 24; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Animated edges for import view */
+.react-flow__edge-path.animated-edge {
+  stroke-dasharray: 6 6;
+  animation: edge-flow 1.5s linear infinite;
+}
+
 /* ─── Landing Page Animations ─── */
 
 @keyframes fadeInUp {

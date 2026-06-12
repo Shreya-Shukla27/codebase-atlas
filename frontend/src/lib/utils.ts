@@ -36,10 +36,10 @@ export function getNodeSize(commitCount: number, maxCommits: number): number {
 
 export function getNodeGlow(commitCount: number, maxCommits: number): string {
   const ratio = maxCommits > 0 ? commitCount / maxCommits : 0;
-  if (ratio > 0.7) return "#f97316"; // hot orange
-  if (ratio > 0.4) return "#eab308"; // warm yellow
-  if (ratio > 0.1) return "#4f8ef7"; // cool blue
-  return "#1a2040"; // dim
+  if (ratio > 0.7) return "#f43f5e"; // hot rose/magenta
+  if (ratio > 0.4) return "#a855f7"; // warm purple
+  if (ratio > 0.1) return "#06b6d4"; // cool cyan
+  return "#334155"; // dim slate
 }
 
 export function formatBytes(bytes: number): string {

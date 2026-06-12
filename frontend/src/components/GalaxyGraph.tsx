@@ -62,12 +62,89 @@ function computeLayout(nodes: FileNode[], edges: Array<{ source: string; target:
 function PlanetNode({ data }: NodeProps) {
   const { node, size, color, glow, selected, viewMode } = data as any;
   const isHot = node.commit_count > 0 && viewMode === "heatmap";
+
+  // Unique delay per node for organic, non-synchronized motion
+  const hash = node.id.split("").reduce((a: number, c: string) => a + c.charCodeAt(0), 0);
+  const floatDelay = (hash % 7) * 0.6;
+  const floatDuration = 4 + (hash % 3);
+  const breatheDuration = 3 + (hash % 4);
+  const breatheDelay = (hash % 5) * 0.8;
+
+  // Neon border intensity based on heat
+  const borderWidth = isHot ? 2 : 1.5;
+  const glowIntensity = isHot ? size * 0.6 : size * 0.3;
+
   return (
-    <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
-      {isHot && <div style={{ position: "absolute", width: size + 16, height: size + 16, borderRadius: "50%", background: `radial-gradient(circle, ${glow}22, transparent 70%)`, pointerEvents: "none" }} />}
-      {selected && <div style={{ position: "absolute", width: size + 8, height: size + 8, borderRadius: "50%", border: "2px solid #fff", opacity: 0.6, pointerEvents: "none" }} />}
-      <div style={{ width: size, height: size, borderRadius: "50%", background: `radial-gradient(circle at 35% 35%, ${color}dd, ${color}88)`, boxShadow: isHot ? `0 0 ${size / 2}px ${glow}66` : `0 0 8px ${color}33`, cursor: "pointer", transition: "transform 0.25s ease", transform: selected ? "scale(1.08)" : "scale(1)", border: selected ? `1px solid ${color}` : "none" }} />
-      {size > 22 && <div style={{ position: "absolute", top: size + 4, left: "50%", transform: "translateX(-50%)", whiteSpace: "nowrap", fontSize: 10, color: selected ? "#fff" : "#64748b", fontFamily: "'Fira Code', monospace", pointerEvents: "none", maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis" }}>{node.label}</div>}
+    <div style={{
+      position: "relative",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      animation: `planet-float ${floatDuration}s ease-in-out ${floatDelay}s infinite`,
+    }}>
+      {/* Outer glow ring — soft ambient halo */}
+      <div style={{
+        position: "absolute",
+        width: size + 24,
+        height: size + 24,
+        borderRadius: "50%",
+        background: `radial-gradient(circle, ${color}18, ${color}08 50%, transparent 70%)`,
+        pointerEvents: "none",
+        animation: isHot ? `planet-breathe ${breatheDuration}s ease-in-out ${breatheDelay}s infinite` : "none",
+      }} />
+
+      {/* Selection ring with pulse */}
+      {selected && (
+        <div style={{
+          position: "absolute",
+          width: size + 16,
+          height: size + 16,
+          borderRadius: "50%",
+          border: `1.5px solid ${color}88`,
+          pointerEvents: "none",
+          animation: "selection-ping 2s ease-in-out infinite",
+        }} />
+      )}
+
+      {/* Planet core — dark fill with neon border glow */}
+      <div style={{
+        width: size,
+        height: size,
+        borderRadius: "50%",
+        background: `radial-gradient(circle at 40% 35%, #1a2040, #0d1225 70%, #080c18)`,
+        border: `${borderWidth}px solid ${color}`,
+        boxShadow: [
+          `0 0 ${glowIntensity * 0.4}px ${color}55`,
+          `0 0 ${glowIntensity}px ${color}22`,
+          `inset 0 0 ${size * 0.3}px ${color}15`,
+          selected ? `0 0 ${glowIntensity * 1.5}px ${color}66` : "",
+        ].filter(Boolean).join(", "),
+        cursor: "pointer",
+        transition: "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease",
+        transform: selected ? "scale(1.1)" : "scale(1)",
+      }} />
+
+      {/* Label below every node */}
+      {size > 12 && (
+        <div style={{
+          position: "absolute",
+          top: size + 6,
+          left: "50%",
+          transform: "translateX(-50%)",
+          whiteSpace: "nowrap",
+          fontSize: size > 30 ? 10 : 9,
+          color: selected ? "#fff" : "#94a3b8",
+          fontFamily: "'Fira Code', monospace",
+          pointerEvents: "none",
+          maxWidth: 130,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          transition: "color 0.3s ease",
+          textShadow: "0 1px 3px rgba(0,0,0,0.8)",
+        }}>
+          {node.label}
+        </div>
+      )}
     </div>
   );
 }
@@ -99,15 +176,18 @@ export default function GalaxyGraph({ graph, viewMode, selectedNode, onSelectNod
     graph.nodes.map(node => {
       const pos = positions[node.id] || { x: 0, y: 0 };
       const size = getNodeSize(node.commit_count, maxCommits);
-      const color = viewMode === "language" ? getLangColor(node.language) : viewMode === "heatmap" ? getNodeGlow(node.commit_count, maxCommits) : "#4f8ef7";
-      const glow = getNodeGlow(node.commit_count, maxCommits);
-      return { id: node.id, type: "planet", position: pos, data: { node, size, color, glow, selected: selectedNode === node.id, viewMode }, style: { background: "transparent", border: "none" } } as any;
+      // Always use language color for the border — gives multi-colored planets
+      // Glow color is used only for the glow intensity effect in heatmap mode
+      const langColor = getLangColor(node.language);
+      const glowColor = getNodeGlow(node.commit_count, maxCommits);
+      const color = viewMode === "language" ? langColor : viewMode === "heatmap" ? langColor : "#4f8ef7";
+      return { id: node.id, type: "planet", position: pos, data: { node, size, color, glow: glowColor, selected: selectedNode === node.id, viewMode }, style: { background: "transparent", border: "none" } } as any;
     }),
     [graph.nodes, positions, viewMode, selectedNode, maxCommits]
   );
 
   const rfEdges: Edge[] = useMemo(() =>
-    viewMode === "imports" ? graph.edges.map(e => ({ id: e.id, source: e.source, target: e.target, style: { stroke: "#1e3a5f", strokeWidth: 1, opacity: 0.6 }, animated: false })) : [],
+    viewMode === "imports" ? graph.edges.map(e => ({ id: e.id, source: e.source, target: e.target, style: { stroke: "#1e3a5f", strokeWidth: 1.5, opacity: 0.5 }, animated: true })) : [],
     [graph.edges, viewMode]
   ) as any;
 
