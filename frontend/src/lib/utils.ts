@@ -1,7 +1,7 @@
 export const LANG_COLORS: Record<string, string> = {
   Python: "#3776ab",
   JavaScript: "#f7df1e",
-  TypeScript: "#3178c6",
+  TypeScript: "#38bdf8",
   Java: "#ed8b00",
   Go: "#00add8",
   Rust: "#ce422b",
@@ -17,7 +17,7 @@ export const LANG_COLORS: Record<string, string> = {
   HTML: "#e34c26",
   CSS: "#1572b6",
   SCSS: "#cf649a",
-  Markdown: "#083fa1",
+  Markdown: "#f43f5e",
   JSON: "#8bc34a",
   YAML: "#cb171e",
   Other: "#64748b",
