@@ -167,7 +167,7 @@ export default function Home() {
         {/* ─── Attribution ─── */}
         <div className="animate-fade-in-up delay-800 flex flex-col items-center gap-1.5 pb-4">
           <p className="text-atlas-dim/40 text-[11px] text-center tracking-wide">
-            React Flow · D3 · FastAPI · Claude AI
+            React Flow · D3 · FastAPI · Groq AI
           </p>
           <p className="text-atlas-dim/70 text-sm text-center font-medium tracking-wider">
             Made by <span className="text-atlas-accent font-semibold">Shreya</span>

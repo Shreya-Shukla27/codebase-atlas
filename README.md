@@ -2,7 +2,27 @@
 
 > Visualize any GitHub repo as an interactive galaxy. Files are planets- the more commits, the brighter they glow.
 
-![Stack](https://img.shields.io/badge/Next.js_14-black?style=flat&logo=next.js) ![Stack](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white) ![Stack](https://img.shields.io/badge/React_Flow-FF0072?style=flat&logo=react&logoColor=white)
+**Frontend** &nbsp;
+![Next.js](https://img.shields.io/badge/Next.js_15-000000?style=flat&logo=next.js&logoColor=white)
+![React](https://img.shields.io/badge/React_18-61DAFB?style=flat&logo=react&logoColor=black)
+![React Flow](https://img.shields.io/badge/React_Flow-FF0072?style=flat&logo=react&logoColor=white)
+![D3.js](https://img.shields.io/badge/D3_Force-F9A03C?style=flat&logo=d3.js&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat&logo=tailwindcss&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
+
+**Backend** &nbsp;
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white)
+![Python](https://img.shields.io/badge/Python_3.11-3776AB?style=flat&logo=python&logoColor=white)
+![Pydantic](https://img.shields.io/badge/Pydantic-E92063?style=flat&logo=pydantic&logoColor=white)
+
+**AI** &nbsp;
+![Groq](https://img.shields.io/badge/Groq_API-F55036?style=flat&logo=groq&logoColor=white)
+![Llama](https://img.shields.io/badge/Llama_3.1_8B-0467DF?style=flat&logo=meta&logoColor=white)
+![SSE](https://img.shields.io/badge/SSE_Streaming-333333?style=flat&logo=serverless&logoColor=white)
+
+**Deployment** &nbsp;
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat&logo=vercel&logoColor=white)
+![Render](https://img.shields.io/badge/Render-46E3B7?style=flat&logo=render&logoColor=black)
 
 ## 🚀 Live Demo
 
@@ -20,7 +40,7 @@
 - **Galaxy Visualization**- React Flow graph with circular orbital layout. File size = planet size, commit frequency = glow intensity
 - **3 View Modes**- Commit Heatmap, Import Graph (dependency edges), Language Colors
 - **Click to Inspect**- Select any planet to see file stats, imports, and dependents
-- **AI Chat**- Ask Claude anything about the repo architecture (requires Anthropic API key)
+- **AI Chat**- Ask Llama 3.1 anything about the repo architecture (via Groq API)
 - **Live Stats Panel**- Language breakdown, hottest files, total edges
 
 ---
@@ -32,7 +52,7 @@
 - Node.js 18+
 - Python 3.11+
 - GitHub Token (optional but recommended to avoid rate limits)
-- Anthropic API Key (for AI chat feature)
+- Groq API Key (for AI chat feature)
 
 ---
 
@@ -56,11 +76,11 @@ uvicorn app.main:app --reload --port 8000
 
 ```env
 GITHUB_TOKEN=ghp_your_token_here
-ANTHROPIC_API_KEY=sk-ant-your_key_here
+GROQ_API_KEY=gsk_your_key_here
 ```
 
 Get a GitHub token at: https://github.com/settings/tokens (no scopes needed for public repos)
-Get an Anthropic key at: https://console.anthropic.com
+Get a Groq key at: https://console.groq.com
 
 ---
 
@@ -176,4 +196,4 @@ Edit `getNodeSize()` in `frontend/src/lib/utils.ts`
 
 ---
 
-Built as a portfolio project demonstrating: AST parsing · Graph layout algorithms · Streaming AI · React Flow · FastAPI SSE
+Built as a portfolio project demonstrating: AST parsing · Graph layout algorithms · Streaming AI · React Flow · FastAPI SSE · Groq Inference
