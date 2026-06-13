@@ -91,7 +91,7 @@ export default function Home() {
 
         {/* ─── Search Bar ─── */}
         <form onSubmit={handleSubmit} className="w-full animate-fade-in-up delay-300">
-          <div className={`flex gap-2 glass rounded-xl p-1.5 transition-all duration-300 ${focused ? "border-atlas-accent/50 shadow-lg shadow-atlas-accent/10" : ""}`}>
+          <div className={`flex flex-col sm:flex-row gap-2 glass rounded-xl p-1.5 transition-all duration-300 ${focused ? "border-atlas-accent/50 shadow-lg shadow-atlas-accent/10" : ""}`}>
             <div className="flex-1 flex items-center gap-3 px-3">
               <svg className="w-4 h-4 text-atlas-dim flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -101,7 +101,7 @@ export default function Home() {
                 onChange={e => { setInput(e.target.value); setError(""); }}
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
-                placeholder="github.com/owner/repo or owner/repo"
+                placeholder="github.com/owner/repo"
                 className="flex-1 bg-transparent py-3 text-sm text-atlas-text placeholder-atlas-dim/60 focus:outline-none font-mono tracking-tight"
                 id="repo-input"
               />
@@ -109,7 +109,7 @@ export default function Home() {
             <button
               type="submit"
               id="explore-button"
-              className="px-8 py-3 bg-gradient-to-r from-atlas-accent to-atlas-glow text-white rounded-lg text-sm font-semibold btn-glow active:scale-95 transition-transform tracking-wide"
+              className="px-8 py-3 bg-gradient-to-r from-atlas-accent to-atlas-glow text-white rounded-lg text-sm font-semibold btn-glow active:scale-95 transition-transform tracking-wide sm:flex-shrink-0"
             >
               Explore
             </button>
@@ -124,7 +124,7 @@ export default function Home() {
             Try these
             <span className="w-8 h-px bg-atlas-border" />
           </p>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {EXAMPLES.map((ex, i) => (
               <button
                 key={ex.repo}

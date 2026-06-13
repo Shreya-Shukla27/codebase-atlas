@@ -23,6 +23,7 @@ export default function AtlasPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("heatmap");
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
+  const [statsOpen, setStatsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [chatLoading, setChatLoading] = useState(false);
 
@@ -94,7 +95,7 @@ ${edgeSample}`;
   if (!graph) return null;
 
   return (
-    <div className="w-screen h-screen flex flex-col overflow-hidden" style={{ background: "#050810" }}>
+    <div className="w-screen h-screen flex flex-col overflow-hidden no-overscroll" style={{ background: "#050810", height: "100dvh" }}>
       <TopBar
         repo={`${owner}/${repo}`}
         stats={graph.stats}
@@ -102,6 +103,8 @@ ${edgeSample}`;
         setViewMode={setViewMode}
         chatOpen={chatOpen}
         setChatOpen={setChatOpen}
+        statsOpen={statsOpen}
+        setStatsOpen={setStatsOpen}
       />
 
       <div className="flex flex-1 overflow-hidden relative">
@@ -116,11 +119,13 @@ ${edgeSample}`;
           />
         </div>
 
-        {/* Stats sidebar */}
+        {/* Stats panel — sidebar on desktop, overlay on mobile */}
         <StatsPanel
           graph={graph}
           selectedNode={selectedNode}
           onSelectNode={setSelectedNode}
+          open={statsOpen}
+          onClose={() => setStatsOpen(false)}
         />
 
         {/* Chat panel */}

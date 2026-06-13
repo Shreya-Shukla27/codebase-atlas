@@ -6,9 +6,11 @@ interface Props {
   graph: RepoGraph;
   selectedNode: string | null;
   onSelectNode: (id: string | null) => void;
+  open?: boolean;
+  onClose?: () => void;
 }
 
-export default function StatsPanel({ graph, selectedNode, onSelectNode }: Props) {
+export default function StatsPanel({ graph, selectedNode, onSelectNode, open, onClose }: Props) {
   const selected = selectedNode ? graph.nodes.find(n => n.id === selectedNode) : null;
   const connectedEdges = selectedNode
     ? graph.edges.filter(e => e.source === selectedNode || e.target === selectedNode)
@@ -19,23 +21,49 @@ export default function StatsPanel({ graph, selectedNode, onSelectNode }: Props)
   const totalLines = graph.nodes.reduce((s, n) => s + n.lines, 0);
   const hotFiles = [...graph.nodes].sort((a, b) => b.commit_count - a.commit_count).slice(0, 8);
 
+  // On mobile (< md), render as overlay; on desktop, render as sidebar
   return (
-    <div className="w-64 flex-shrink-0 flex flex-col overflow-y-auto border-l"
-      style={{ background: "#0a0f1e", borderColor: "#1a2040" }}>
-
-      {/* Selected node detail */}
-      {selected ? (
-        <NodeDetail
-          node={selected}
-          imports={imports}
-          importedBy={importedBy}
-          allNodes={graph.nodes}
-          onSelectNode={onSelectNode}
+    <>
+      {/* Mobile backdrop */}
+      {open && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={onClose}
         />
-      ) : (
-        <RepoOverview graph={graph} totalLines={totalLines} hotFiles={hotFiles} onSelectNode={onSelectNode} />
       )}
-    </div>
+
+      {/* Panel: on desktop always visible as sidebar; on mobile as slide-in overlay */}
+      <div
+        className={`
+          fixed top-0 right-0 bottom-0 z-50 w-72 flex flex-col overflow-y-auto border-l
+          transform transition-transform duration-300 ease-in-out
+          md:relative md:top-auto md:right-auto md:bottom-auto md:z-auto md:w-64
+          md:transform-none md:transition-none
+          ${open ? "translate-x-0" : "translate-x-full"}
+          md:translate-x-0
+        `}
+        style={{ background: "#0a0f1e", borderColor: "#1a2040" }}
+      >
+        {/* Mobile close header */}
+        <div className="flex md:hidden items-center justify-between h-12 px-4 border-b flex-shrink-0" style={{ borderColor: "#1a2040" }}>
+          <span className="text-sm font-mono text-white">Stats</span>
+          <button onClick={onClose} className="text-atlas-dim hover:text-white transition-colors text-lg leading-none p-1">×</button>
+        </div>
+
+        {/* Selected node detail */}
+        {selected ? (
+          <NodeDetail
+            node={selected}
+            imports={imports}
+            importedBy={importedBy}
+            allNodes={graph.nodes}
+            onSelectNode={onSelectNode}
+          />
+        ) : (
+          <RepoOverview graph={graph} totalLines={totalLines} hotFiles={hotFiles} onSelectNode={onSelectNode} />
+        )}
+      </div>
+    </>
   );
 }
 
@@ -52,7 +80,7 @@ function NodeDetail({ node, imports, importedBy, allNodes, onSelectNode }: {
   return (
     <div className="p-4 flex flex-col gap-4">
       <div className="flex items-start justify-between gap-2">
-        <div>
+        <div className="min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: color }} />
             <span className="text-xs font-mono text-white font-medium truncate">{node.label}</span>

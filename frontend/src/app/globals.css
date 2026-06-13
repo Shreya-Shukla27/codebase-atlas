@@ -267,3 +267,50 @@ body {
   left: 50%;
 }
 
+/* ─── Mobile Responsiveness ─── */
+
+/* Safe area padding for notched devices */
+@supports (padding: env(safe-area-inset-top)) {
+  .safe-area-top { padding-top: env(safe-area-inset-top); }
+  .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom); }
+}
+
+/* Touch-friendly tap targets */
+@media (max-width: 767px) {
+  button, a, [role="button"] {
+    min-height: 36px;
+  }
+
+  /* Prevent text size adjustment on orientation change */
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Smoother scrolling on touch */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Hide minimap on mobile – too small to be useful */
+  .react-flow__minimap {
+    display: none !important;
+  }
+
+  /* Compact React Flow controls on mobile */
+  .react-flow__controls {
+    bottom: 10px !important;
+    left: 10px !important;
+  }
+
+  /* Better touch handling for React Flow */
+  .react-flow__pane {
+    touch-action: none;
+  }
+}
+
+/* Prevent pull-to-refresh on atlas page */
+.no-overscroll {
+  overscroll-behavior: none;
+}
+
